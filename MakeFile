@@ -1,0 +1,16 @@
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra
+
+TARGET = simulator
+SRC = simulator.cpp
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET) $(ARGS)
+
+clean:
+	rm -f $(TARGET)
