@@ -92,7 +92,8 @@ int main(int, char *argv[])
     {
         queues.push_back(std::queue<double>()); // create empty queue
     }
-
+    std::vector<int> current_in_system(M, 0);
+    
     double current_time = 0.0;
     std::discrete_distribution<int> dist(Pi.begin(), Pi.end()); // to choose the server based on Pi
     std::vector<double> last_departure_time(M, 0.0);
@@ -116,20 +117,23 @@ int main(int, char *argv[])
         double departure_time = service_time + service_start_time;
         double waiting_time = departure_time - arrival_time - service_time;
 
-        if (queues[server_index].size() < static_cast<size_t>(Qi[server_index]))
-        {
-            // enqueue the arrival time
-            queues[server_index].push(current_time);
+       if (last_departure_time[server_index] <= current_time)
+       {
+            current_in_system[server_index] = 0;
+       }
+        
+       if (current_in_system[server_index] < Qi[server_index])
+       {
+            current_in_system[server_index]++;
             last_departure_time[server_index] = departure_time;
             total_waiting_time += waiting_time;
             total_service_time += service_time;
             completed_requests++;
         }
         else
-        {
-            // request denied
-            denied_requests++;
-        }
+    {
+        denied_requests++;
+    }
 
         if (departure_time > last_completion_time)
         {
